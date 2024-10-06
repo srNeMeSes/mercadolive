@@ -212,7 +212,7 @@ def main(page: ft.Page):
 
             try:
                 # Caminho para o arquivo JSON que você baixou (o arquivo de credenciais correto)
-                cred = credentials.Certificate('serviceAccountKey.json')
+                cred = credentials.Certificate('nadademais.json')
 
                 # Inicializa o Firebase Admin SDK com o arquivo de credenciais
                 firebase_admin.initialize_app(cred, {
