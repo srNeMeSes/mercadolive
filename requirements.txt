@@ -1,4 +1,3 @@
 flet
 webbrowser
-json
-requests
+firebase_admin
